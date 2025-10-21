@@ -21,6 +21,8 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
+export const MIN_PERSONS_PER_ORDER = 4
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -29,9 +31,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) => {
       const existing = prev.find((i) => i.id === item.id)
       if (existing) {
-        return prev.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i))
+        return prev.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + MIN_PERSONS_PER_ORDER } : i,
+        )
       }
-      return [...prev, { ...item, quantity: 1 }]
+      return [...prev, { ...item, quantity: MIN_PERSONS_PER_ORDER }]
     })
     setIsCartOpen(true)
   }
@@ -45,7 +49,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem(id)
       return
     }
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, quantity } : i)))
+    const normalizedQuantity = Math.max(MIN_PERSONS_PER_ORDER, quantity)
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, quantity: normalizedQuantity } : i)))
   }
 
   const clearCart = () => {

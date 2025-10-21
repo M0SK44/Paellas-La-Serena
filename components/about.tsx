@@ -90,7 +90,7 @@ export function About() {
             <div className="rounded-3xl border border-primary/30 bg-primary/5 px-6 py-8 shadow-lg">
               <h3 className="text-xl font-semibold text-foreground mb-3">Delivery especializado en paellas</h3>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                En Paellas La Serena coordinamos cada detalle contigo: fecha, horarios, puntos de entrega. Nuestro equipo llega con todo lo necesario para cocinar en vivo o entregar la paella lista,
+                En Paellas La Serena coordinamos cada detalle contigo: fecha, horarios, puntos de entrega. Nuestro equipo te entregar la paella lista,
                 cuidando la presentación y temperatura de cada plato.
               </p>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed mt-3">

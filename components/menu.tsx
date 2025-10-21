@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
-import { useCart } from "@/components/cart-context"
+import { useCart, MIN_PERSONS_PER_ORDER } from "@/components/cart-context"
 
 type MenuItem = {
   id: number
@@ -108,7 +108,11 @@ export function Menu() {
     <section id="menu" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Nuestro Menú</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Nuestro Menú</h2>
+          <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-primary sm:text-sm">
+            <span className="inline-flex h-2 w-2 rounded-full bg-primary animate-pulse" aria-hidden="true" />
+            <span>Pedido mínimo para {MIN_PERSONS_PER_ORDER} personas</span>
+          </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Descubre nuestras deliciosas paellas preparadas con ingredientes frescos y auténticos
           </p>

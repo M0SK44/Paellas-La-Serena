@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { X, Minus, Plus, ShoppingBag } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useCart } from "@/components/cart-context"
+import { useCart, MIN_PERSONS_PER_ORDER } from "@/components/cart-context"
 
 const deliveryOptions = {
   serena: { label: "La Serena", fee: 3000 },
@@ -24,6 +24,20 @@ export function Cart() {
   const summaryTotal = deliveryZone ? totalWithDelivery : total
   const summaryLabel = deliveryZone ? "Total con delivery:" : "Total:"
   const summaryTotalDisplay = `$${summaryTotal.toLocaleString()}`
+  const minimumPersonsMet = totalPersons >= MIN_PERSONS_PER_ORDER
+
+  const handleDecrease = (itemId: number, currentQuantity: number) => {
+    const newQuantity = currentQuantity - MIN_PERSONS_PER_ORDER
+    if (newQuantity <= 0) {
+      removeItem(itemId)
+      return
+    }
+    updateQuantity(itemId, newQuantity)
+  }
+
+  const handleIncrease = (itemId: number, currentQuantity: number) => {
+    updateQuantity(itemId, currentQuantity + MIN_PERSONS_PER_ORDER)
+  }
 
   const sendToWhatsApp = () => {
     if (!deliveryZone) return
@@ -115,14 +129,16 @@ export function Cart() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 bg-muted rounded-lg p-1">
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => handleDecrease(item.id, item.quantity)}
                         className="hover:bg-background p-2 rounded transition-colors"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
-                      <span className="font-semibold w-8 text-center">{item.quantity}</span>
+                      <span className="font-semibold text-center px-2 text-xs sm:text-sm">
+                        {`${item.quantity} personas`}
+                      </span>
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() => handleIncrease(item.id, item.quantity)}
                         className="hover:bg-background p-2 rounded transition-colors"
                       >
                         <Plus className="w-4 h-4" />
@@ -179,10 +195,10 @@ export function Cart() {
                 </div>
               </div>
 
-              {totalPersons < 4 && (
+              {totalPersons < MIN_PERSONS_PER_ORDER && (
                 <div className="bg-accent/20 border border-accent rounded-lg p-3">
                   <p className="text-xs sm:text-sm text-accent-foreground text-center font-medium">
-                    {"Sabias? Pedido minimo para 4 personas"}
+                    {`Sabias? Pedido minimo para ${MIN_PERSONS_PER_ORDER} personas`}
                   </p>
                 </div>
               )}
@@ -214,7 +230,7 @@ export function Cart() {
 
               <Button
                 onClick={sendToWhatsApp}
-                disabled={totalPersons < 4 || !deliveryZone}
+                disabled={!minimumPersonsMet || !deliveryZone}
                 className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white text-base sm:text-lg py-5 sm:py-6 disabled:opacity-50 disabled:cursor-not-allowed"
                 size="lg"
               >
